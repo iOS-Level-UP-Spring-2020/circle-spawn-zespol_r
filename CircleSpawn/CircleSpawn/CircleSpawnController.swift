@@ -47,10 +47,14 @@ class CircleSpawnController: UIViewController {
         if sender.state == .ended {
             let viewsFilter = view.subviews.filter { view -> Bool in return view.frame.contains(locationTapped) }
             guard let viewTapped = viewsFilter.last else { return }
-            viewTapped.removeFromSuperview()
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                viewTapped.alpha = 0
+                viewTapped.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+            }, completion: { completed in
+                viewTapped.removeFromSuperview()
+            })
         }
-        
-        // TODO: Animacja usuwania
     }
 }
 
