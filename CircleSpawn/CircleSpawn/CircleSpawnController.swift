@@ -22,7 +22,6 @@ class CircleSpawnController: UIViewController {
     @objc func handleDoubleTap(sender: UITapGestureRecognizer) {
            
         if sender.state == .ended {
-//            print("Double tap gesture")
             //Tworzenie koła
             let size: CGFloat = 100
             let circleView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: size, height: size)))
@@ -44,13 +43,14 @@ class CircleSpawnController: UIViewController {
     }
     
     @objc func handleTripleTap(sender: UITapGestureRecognizer) {
+        let locationTapped = sender.location(in: self.view)
         if sender.state == .ended {
-            if let viewWithTag = self.view.viewWithTag(100) {
-                viewWithTag.removeFromSuperview()
-            } else {
-                print("No!")
-            }
+            let viewsFilter = view.subviews.filter { view -> Bool in return view.frame.contains(locationTapped) }
+            guard let viewTapped = viewsFilter.last else { return }
+            viewTapped.removeFromSuperview()
         }
+        
+        // TODO: Animacja usuwania
     }
 }
 
