@@ -2,7 +2,6 @@ import UIKit
 
 class CircleSpawnController: UIViewController {
 
-    // TODO: Assignment 1
 
     override func loadView() {
         view = UIView()
@@ -39,9 +38,37 @@ class CircleSpawnController: UIViewController {
                 circleView.alpha = 1;
             })
             animator.startAnimation()
+            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
+                   circleView.addGestureRecognizer(longPress)
         }
     }
-    
+    @objc func handleLongPress(sender: UILongPressGestureRecognizer) {
+        guard let circleView = sender.view else { return }
+        let circlePress = sender.location(in: view)
+        var dx = CGFloat()
+        var dy = CGFloat()
+        switch sender.state{
+            case .began:
+                dx = circlePress.x - circleView.center.x
+                dy = circlePress.y - circleView.center.y
+                let animator = UIViewPropertyAnimator(duration: 0.1 , curve: .easeInOut, animations: {
+                    self.view.bringSubviewToFront(circleView)
+                    circleView.transform = CGAffineTransform(scaleX: 1.4, y: 1.4)
+                    circleView.alpha = 0.5
+                })
+                animator.startAnimation()
+            case .changed:
+                circleView.center = CGPoint(x: circlePress.x - dx, y: circlePress.y - dy)
+            case .cancelled, .ended, .failed:
+                let animator = UIViewPropertyAnimator(duration: 0.1, curve: .easeInOut, animations: {
+                    circleView.alpha = 1
+                    circleView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                })
+                animator.startAnimation()
+            default:
+                break
+        }
+    }
     @objc func handleTripleTap(sender: UITapGestureRecognizer) {
         let locationTapped = sender.location(in: self.view)
         if sender.state == .ended {
